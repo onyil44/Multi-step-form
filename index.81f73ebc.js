@@ -650,733 +650,7 @@ const init = function() {
 };
 init();
 
-},{"./model":"c5Qb1","./view/personalInfoView":"aDUeM","./view/selecPlanView":"j5oVO","./view/sidebarView":"eDgDT","./view/addOnsView":"dgUbU","./view/summaryView":"ioU2i","./view/thankYouView":"cH3qm","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ"}],"c5Qb1":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "state", ()=>state);
-parcelHelpers.export(exports, "holdPersonalInfo", ()=>holdPersonalInfo);
-parcelHelpers.export(exports, "yearlyPlanSelect", ()=>yearlyPlanSelect);
-parcelHelpers.export(exports, "setPage", ()=>setPage);
-parcelHelpers.export(exports, "holdPaymentPlan", ()=>holdPaymentPlan);
-parcelHelpers.export(exports, "resetAddOns", ()=>resetAddOns);
-parcelHelpers.export(exports, "holdAddOns", ()=>holdAddOns);
-parcelHelpers.export(exports, "setTotal", ()=>setTotal);
-const state = {
-    record: {
-        personalInfo: {},
-        paymentPlan: {},
-        yearly: new Boolean(),
-        addOns: {
-            onlineService: 0,
-            largerStorage: 0,
-            customProfile: 0
-        },
-        total: new Number()
-    },
-    page: `personal-info`,
-    plans: {
-        yearly: true,
-        arcade: [
-            9,
-            90
-        ],
-        advanced: [
-            12,
-            120
-        ],
-        pro: [
-            15,
-            150
-        ]
-    },
-    addOns: {
-        onlineService: [
-            1,
-            10
-        ],
-        largerStorage: [
-            2,
-            20
-        ],
-        customProfile: [
-            2,
-            20
-        ]
-    }
-};
-const holdPersonalInfo = function(data) {
-    state.record.personalInfo = data;
-};
-const yearlyPlanSelect = function(data) {
-    state.plans.yearly = data;
-};
-const setPage = function(data) {
-    state.page = data;
-};
-const holdPaymentPlan = function(data) {
-    state.record.paymentPlan.planType = data.plan_type;
-    state.record.paymentPlan.paymentValue = +data.select_plan;
-    state.record.yearly = data.yearly === `on` ? true : false;
-};
-const resetAddOns = function() {
-    state.record.addOns = {
-        onlineService: 0,
-        largerStorage: 0,
-        customProfile: 0
-    };
-};
-const holdAddOns = function(data) {
-    if (!data) return;
-    state.record.addOns.onlineService = data.online_service ? +data.online_service : 0;
-    state.record.addOns.largerStorage = data.larger_storage ? +data.larger_storage : 0;
-    state.record.addOns.customProfile = data.custom_profile ? +data.custom_profile : 0;
-};
-const setTotal = function() {
-    const totalAddOns = Array.from(Object.values(state.record.addOns)).reduce((arr, cur)=>cur + arr);
-    state.record.total = state.record.paymentPlan.paymentValue + totalAddOns;
-};
-const setYearly = function() {
-    if (state.yearly === false) state.plans.yearly = state.yearly;
-};
-const init = function() {
-    setYearly();
-};
-init();
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"aDUeM":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _view = require("./view");
-var _viewDefault = parcelHelpers.interopDefault(_view);
-class PersonalInfoView extends (0, _viewDefault.default) {
-    _parentElement = document.querySelector(`.personal-info`);
-    constructor(){
-        super();
-        this.addHandlerInput(this.dataValidation.bind(this));
-    }
-    addHandlerPersonalInfo = function(handler) {
-        window.addEventListener(`load`, handler);
-    };
-    addHandlerPersonalInfoSubmit = function(handler) {
-        this._parentElement.addEventListener(`submit`, function(e) {
-            e.preventDefault();
-            const goTo = e.target.querySelector(`.btn-next`).dataset.goto;
-            const dataArr = [
-                ...new FormData(this)
-            ];
-            const data = Object.fromEntries(dataArr);
-            handler(data, goTo);
-        });
-    };
-    addHandlerInput = function(handler) {
-        this._parentElement.addEventListener(`input`, function(e) {
-            const input = e.target.closest(`input`);
-            if (!input) return;
-            handler();
-        });
-    };
-    dataValidation() {
-        const inputs = Array.from(this._parentElement.querySelectorAll(`input`));
-        const control = [];
-        inputs.forEach((input)=>{
-            if (input.value === `` && !input.classList.contains(`invalid`)) input.classList.add(`invalid`);
-            else if (input.value !== `` && input.classList.contains(`invalid`)) input.classList.remove(`invalid`);
-            control.push(input.value === `` ? 0 : 1);
-        });
-        return control.reduce((arr, cur)=>arr * cur);
-    }
-    _generateMarkup() {
-        const markup = `
-        <div class="form__header">
-        <h2 class="form__title">Personal info</h2>
-        <span class="form__text"
-            >Please provide your name, email address, and phone number.</span
-        >
-        </div>
-        <div class="form__group">
-        <label for="name" class="form__label">Name</label>
-        <input
-            type="text"
-            class="form__input"
-            id="name"
-            placeholder="e.g. Stephen King"
-            name="name"
-            value="${Object.keys(this._data).length === 0 ? `` : this._data.name}"
-        />
-        <span class="form__input-error">This field is required</span>
-        </div>
-        <div class="form__group">
-        <label for="email" class="form__label">Email Address</label>
-        <input
-            type="email"
-            class="form__input"
-            id="email"
-            placeholder="e.g. stephenking@lorem.com"
-            name="email"
-            value="${Object.keys(this._data).length === 0 ? `` : this._data.email}"
-        />
-        <span class="form__input-error">This field is required</span>
-        </div>
-        <div class="form__group">
-        <label for="phone" class="form__label">Phone Number</label>
-        <input
-            type="phone"
-            class="form__input"
-            id="phone"
-            placeholder="e.g. +1 234 567 890"
-            name="phone"
-            value="${Object.keys(this._data).length === 0 ? `` : this._data.phone}"
-        />
-        <span class="form__input-error">This field is required</span>
-        </div>
-        <div class="btn-container">
-        <button class="btn btn-next" data-goto="select-plan">Next Step</button>
-        </div>
-    
-    
-    `;
-        return markup;
-    }
-}
-exports.default = new PersonalInfoView();
-
-},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jTxwe":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-class View {
-    _data;
-    render(data, clear = true) {
-        this._data = data;
-        this.clear(clear);
-        const markup = this._generateMarkup();
-        this._parentElement.insertAdjacentHTML(`afterbegin`, markup);
-    }
-    update(data) {
-        this._data = data;
-        if (!data) return;
-        const markup = this._generateMarkup();
-        const newDOM = document.createRange().createContextualFragment(markup);
-        const newElement = Array.from(newDOM.querySelectorAll(`*`));
-        const curElement = Array.from(this._parentElement.querySelectorAll(`*`));
-        newElement.forEach((newEl, i)=>{
-            const curEl = curElement[i];
-            if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== ``) curEl.textContent = newEl.textContent;
-            if (!newEl.isEqualNode(curEl)) Array.from(newEl.attributes).forEach((attr)=>curEl.setAttribute(attr.name, attr.value));
-        });
-    }
-    dataValidation(type) {
-        const inputs = Array.from(this._parentElement.querySelectorAll(`input`));
-        let control = [];
-        if (type === `text`) {
-            inputs.forEach((input)=>{
-                if (input.value === `` && !input.classList.contains(`invalid`)) input.classList.add(`invalid`);
-                else if (input.value !== `` && input.classList.contains(`invalid`)) input.classList.remove(`invalid`);
-                control.push(input.value === `` ? 0 : 1);
-            });
-            return control.reduce((arr, cur)=>arr * cur);
-        } else if (type === `radio`) {
-            control = inputs.map((cur)=>cur.checked === true ? 1 : 0);
-            inputs.forEach((input)=>{
-                if (!control && !input.classList.contains(`invalid`)) input.classList.add(`invalid`);
-                else if (control && input.classList.contains(`invalid`)) input.classList.remove(`invalid`);
-            });
-            return control.reduce((sum, cur)=>cur + sum);
-        }
-    }
-    clear(clear) {
-        if (clear === true) {
-            const elementArr = Array.from(this._parentElement.parentElement.children);
-            elementArr.forEach((element)=>element.innerHTML = ``);
-        } else if (clear === false) this._parentElement.innerHTML = ``;
-    }
-}
-exports.default = View;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j5oVO":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _view = require("./view");
-var _viewDefault = parcelHelpers.interopDefault(_view);
-class SelectPlanView extends (0, _viewDefault.default) {
-    _parentElement = document.querySelector(`.select-plan`);
-    constructor(){
-        super();
-        this._addHandlerInputDataValidation(this.dataValidation.bind(this));
-    }
-    addHandlerYearlyPlan(handler) {
-        this._parentElement.addEventListener(`change`, function(e) {
-            const input = e.target.closest(`.form__switch`);
-            if (!input) return;
-            const data = input.checked;
-            handler(data);
-        });
-    }
-    addHandlerClickPlan = function(handler) {
-        this._parentElement.addEventListener(`change`, function(e) {
-            const input = e.target.closest(`.form__radio`);
-            if (!input) return;
-            const dataArr = [
-                ...new FormData(this)
-            ];
-            const data = Object.fromEntries(dataArr);
-            data.plan_type = input.id;
-            handler(data);
-        });
-    };
-    addHandlerSubmitPlan = function(handler) {
-        this._parentElement.addEventListener(`submit`, function(e) {
-            e.preventDefault();
-            const goTo = e.target.querySelector(`.btn-next`).dataset.goto;
-            handler(goTo);
-        });
-    };
-    _addHandlerInputDataValidation = function(handler) {
-        this._parentElement.addEventListener(`input`, function(e) {
-            e.preventDefault();
-            const input = e.target.classList.contains(`.form__radio`);
-            if (!input) return;
-            handler();
-        });
-    };
-    addHandlerPlanGoBack = function(handler) {
-        this._parentElement.addEventListener(`click`, function(e) {
-            const btn = e.target.closest(`.btn-back`);
-            if (!btn) return;
-            const goTo = btn.dataset.goto;
-            handler(goTo);
-        });
-    };
-    dataValidation() {
-        const inputs = Array.from(this._parentElement.querySelectorAll(`.form__radio`));
-        const control = inputs.map((cur)=>cur.checked === true ? 1 : 0);
-        const sumControl = control.reduce((sum, cur)=>cur + sum);
-        inputs.forEach((input)=>{
-            if (!sumControl && !input.nextElementSibling.classList.contains(`invalid`)) input.nextElementSibling.classList.add(`invalid`);
-            else if (sumControl && input.nextElementSibling.classList.contains(`invalid`)) input.nextElementSibling.classList.remove(`invalid`);
-        });
-        return sumControl;
-    }
-    _generateMarkup() {
-        const markup = `
-          <div class="form__header">
-            <h2 class="form__title">Select your plan</h2>
-            <span class="form__text"
-              >You have the option of monthly or yearly billing.</span
-            >
-          </div>
-          <div class="form__group">
-            <input
-              class="form__radio"
-              type="radio"
-              id="arcade"
-              name="select_plan"
-              value="${this._data.plans.yearly ? this._data.plans.arcade[1] : this._data.plans.arcade[0]}"
-              ${this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.arcade[1] || !this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.arcade[0] ? `checked` : ``}
-            />
-            <label class="form__radio-label" for="arcade">
-            <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-          >
-            <g fill="none" fill-rule="evenodd">
-              <circle cx="20" cy="20" r="20" fill="#FFAF7E" />
-              <path
-                fill="#FFF"
-                fill-rule="nonzero"
-                d="M24.995 18.005h-3.998v5.998h-2v-5.998H15a1 1 0 0 0-1 1V29a1 1 0 0 0 1 1h9.995a1 1 0 0 0 1-1v-9.995a1 1 0 0 0-1-1Zm-5.997 8.996h-2v-1.999h2v2Zm2-11.175a2.999 2.999 0 1 0-2 0v2.18h2v-2.18Z"
-              />
-            </g>
-          </svg>
-              <span class="form__radio-title">Arcade</span>
-              <span class="form__radio-text">$${this._data.plans.yearly ? this._data.plans.arcade[1] + `/yr` : this._data.plans.arcade[0] + `/mo`}</span>
-              <span class="form__radio-promo ${!this._data.plans.yearly ? `form__radio-promo--hidden` : ``}">
-              2 months free
-              </span>
-              
-            </label>
-          </div>
-          <div class="form__group">
-            <input
-              class="form__radio"
-              type="radio"
-              id="advanced"
-              name="select_plan"
-              value="${this._data.plans.yearly ? this._data.plans.advanced[1] : this._data.plans.advanced[0]}"
-              ${this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.advanced[1] || !this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.advanced[0] ? `checked` : ``}
-            />
-            <label class="form__radio-label" for="advanced">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="40"
-                height="40"
-                viewBox="0 0 40 40"
-              >
-                <g fill="none" fill-rule="evenodd">
-                  <circle cx="20" cy="20" r="20" fill="#F9818E" />
-                  <path
-                    fill="#FFF"
-                    fill-rule="nonzero"
-                    d="M25.057 15H14.944C12.212 15 10 17.03 10 19.885c0 2.857 2.212 4.936 4.944 4.936h10.113c2.733 0 4.943-2.08 4.943-4.936S27.79 15 25.057 15ZM17.5 20.388c0 .12-.108.237-.234.237h-1.552v1.569c0 .126-.138.217-.259.217H14.5c-.118 0-.213-.086-.213-.203v-1.583h-1.569c-.126 0-.217-.139-.217-.26v-.956c0-.117.086-.213.202-.213h1.584v-1.554c0-.125.082-.231.203-.231h.989c.12 0 .236.108.236.234v1.551h1.555c.125 0 .231.083.231.204v.988Zm5.347.393a.862.862 0 0 1-.869-.855c0-.472.39-.856.869-.856.481 0 .87.384.87.856 0 .471-.389.855-.87.855Zm1.9 1.866a.86.86 0 0 1-.87-.852.86.86 0 0 1 .87-.855c.48 0 .87.38.87.855a.86.86 0 0 1-.87.852Zm0-3.736a.862.862 0 0 1-.87-.854c0-.472.39-.856.87-.856s.87.384.87.856a.862.862 0 0 1-.87.854Zm1.899 1.87a.862.862 0 0 1-.868-.855c0-.472.389-.856.868-.856s.868.384.868.856a.862.862 0 0 1-.868.855Z"
-                  />
-                </g>
-              </svg>
-              <span class="form__radio-title">Advanced</span>
-              <span class="form__radio-text">$${this._data.plans.yearly ? this._data.plans.advanced[1] + `/yr` : this._data.plans.advanced[0] + `/mo`}</span>
-              <span class="form__radio-promo ${!this._data.plans.yearly ? `form__radio-promo--hidden` : ``}">
-              2 months free
-              </span>
-            </label>
-          </div>
-          <div class="form__group">
-            <input
-              class="form__radio"
-              type="radio"
-              id="pro"
-              name="select_plan"
-              value="${this._data.plans.yearly ? this._data.plans.pro[1] : this._data.plans.pro[0]}"
-              ${this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.pro[1] || !this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.pro[0] ? `checked` : ``}
-            />
-            <label class="form__radio-label" for="pro">
-            <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="40"
-          height="40"
-          viewBox="0 0 40 40"
-        >
-          <g fill="none" fill-rule="evenodd">
-            <circle cx="20" cy="20" r="20" fill="#483EFF" />
-            <path
-              fill="#FFF"
-              fill-rule="nonzero"
-              d="M26.666 13H13.334A3.333 3.333 0 0 0 10 16.333v7.193a3.447 3.447 0 0 0 2.14 3.24c1.238.5 2.656.182 3.56-.8L18.52 23h2.96l2.82 2.966a3.2 3.2 0 0 0 3.56.8 3.447 3.447 0 0 0 2.14-3.24v-7.193A3.333 3.333 0 0 0 26.666 13Zm-9.333 6H16v1.333a.667.667 0 0 1-1.333 0V19h-1.333a.667.667 0 0 1 0-1.334h1.333v-1.333a.667.667 0 1 1 1.333 0v1.333h1.333a.667.667 0 1 1 0 1.334Zm7.333 2a2.667 2.667 0 1 1 0-5.333 2.667 2.667 0 0 1 0 5.333ZM26 18.333a1.333 1.333 0 1 1-2.667 0 1.333 1.333 0 0 1 2.667 0Z"
-            />
-          </g>
-        </svg>
-              <span class="form__radio-title">Pro</span>
-              <span class="form__radio-text">$${this._data.plans.yearly ? this._data.plans.pro[1] + `/yr` : this._data.plans.pro[0] + `/mo`}</span>
-              <span class="form__radio-promo ${!this._data.plans.yearly ? `form__radio-promo--hidden` : ``}">
-              2 months free
-              </span>
-            </label>
-          </div>
-          <div class="form__group all-line all-line--gray mt-2">
-            <input
-              type="checkbox"
-              class="form__switch"
-              id="yearly"
-              name="yearly"
-              ${this._data.plans.yearly ? `checked` : ``}
-            />
-            <label for="yearly" class="form__switch-label">
-              <span class="form__switch-text--1">Monthly</span>
-              <span class="form__switch-slider"></span>
-              <span class="form__switch-text--2">Yearly</span>
-            </label>
-          </div>
-          <div class="btn-container">
-            <button type="button" class="btn btn-back" data-goto="personal-info">Go Back</button>
-            <button type="submit" class="btn btn-next" data-goto="add-ons">Next Step</button>
-          </div>
-        
-    `;
-        return markup;
-    }
-}
-exports.default = new SelectPlanView();
-
-},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eDgDT":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _view = require("./view");
-var _viewDefault = parcelHelpers.interopDefault(_view);
-class SidebarView extends (0, _viewDefault.default) {
-    _parentElement = document.querySelector(`.sidebar`);
-    addHandlerChangePage = function(handler) {};
-    _generateMarkup() {
-        const markup = `
-    <ul class="sidebar__list">
-        <li class="sidebar__item ${this._data.page === `personal-info` ? `active` : ``}" data-id="0">
-            <div class="sidebar__item-icon">1</div>
-            <span class="sidebar__item-title">Step 1</span>
-            <span class="sidebar__item-text">Your info</span>
-        </li>
-        <li class="sidebar__item ${this._data.page === `select-plan` ? `active` : ``}" data-id="1">
-            <div class="sidebar__item-icon" >2</div>
-            <span class="sidebar__item-title">Step 2</span>
-            <span class="sidebar__item-text">Select plan</span>
-        </li>
-        <li class="sidebar__item ${this._data.page === `add-ons` ? `active` : ``}" data-id="2">
-            <div class="sidebar__item-icon">3</div>
-            <span class="sidebar__item-title">Step 3</span>
-            <span class="sidebar__item-text">Add-ons Step</span>
-        </li>
-        <li class="sidebar__item ${this._data.page === `summary` ? `active` : ``}" data-id="3">
-            <div class="sidebar__item-icon">4</div>
-            <span class="sidebar__item-title">Step 4</span>
-            <span class="sidebar__item-text">Summary</span>
-        </li>
-    </ul>
-`;
-        return markup;
-    }
-}
-exports.default = new SidebarView();
-
-},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dgUbU":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _view = require("./view");
-var _viewDefault = parcelHelpers.interopDefault(_view);
-class AddOnsView extends (0, _viewDefault.default) {
-    _parentElement = document.querySelector(`.add_ons`);
-    addHandlerClickAnnOns = function(handler) {
-        this._parentElement.addEventListener(`change`, function(e) {
-            const input = e.target.closest(`input`);
-            if (!input) return;
-            const dataArr = [
-                ...new FormData(this)
-            ];
-            const data = Object.fromEntries(dataArr);
-            handler(data);
-        });
-    };
-    addHandlerSubmitAddOns = function(handler) {
-        this._parentElement.addEventListener(`submit`, function(e) {
-            e.preventDefault();
-            const goTo = e.target.querySelector(`.btn-next`).dataset.goto;
-            if (!goTo) return;
-            handler(goTo);
-        });
-    };
-    addHandlerAddOnsGoBack = function(handler) {
-        this._parentElement.addEventListener(`click`, function(e) {
-            const btn = e.target.closest(`.btn-back`);
-            if (!btn) return;
-            const goTo = btn.dataset.goto;
-            handler(goTo);
-        });
-    };
-    _generateMarkup() {
-        const markup = `
-        <div class="form__header">
-            <h2 class="form__title">Pick add-ons</h2>
-            <span class="form__text"
-              >Add-ons help enhance your gaming experience.</span
-            >
-          </div>
-          <div class="form__group mb-1">
-            <input
-              type="checkbox"
-              class="form__checkbox"
-              id="online-service"
-              name="online_service"
-              value="${this._data.plans.yearly ? this._data.addOns.onlineService[1] : this._data.addOns.onlineService[0]}"
-              ${this._data.record.addOns.onlineService > 0 ? `checked` : ``}
-            
-            />
-            <label for="online-service" class="form__checkbox-label">
-              <div class="form__checkbox-icon"></div>
-              <span class="form__checkbox-title">Online service</span>
-              <span class="form__checkbox-text"
-                >Access to multiplayer games</span
-              >
-              <span class="form__checkbox-price">+$${this._data.plans.yearly ? this._data.addOns.onlineService[1] + `/yr` : this._data.addOns.onlineService[0] + `/mo`}</span>
-            </label>
-          </div>
-          <div class="form__group mb-1">
-            <input
-              type="checkbox"
-              class="form__checkbox"
-              id="larger-storage"
-              name="larger_storage"
-              value="${this._data.plans.yearly ? this._data.addOns.largerStorage[1] : this._data.addOns.largerStorage[0]}"
-              ${this._data.record.addOns.largerStorage > 0 ? `checked` : ``}
-
-            />
-            <label for="larger-storage" class="form__checkbox-label">
-              <div class="form__checkbox-icon"></div>
-              <span class="form__checkbox-title">Larger storage</span>
-              <span class="form__checkbox-text">Extra 1TB of cloud save</span>
-              <span class="form__checkbox-price">+$${this._data.plans.yearly ? this._data.addOns.largerStorage[1] + `/yr` : this._data.addOns.largerStorage[0] + `/mo`}</span>
-            </label>
-          </div>
-          <div class="form__group">
-            <input
-              type="checkbox"
-              class="form__checkbox"
-              id="customizable-profile"
-              name="custom_profile"
-              value="${this._data.plans.yearly ? this._data.addOns.customProfile[1] : this._data.addOns.customProfile[0]}"
-              ${this._data.record.addOns.customProfile > 0 ? `checked` : ``}
-
-            />
-            <label for="customizable-profile" class="form__checkbox-label">
-              <div class="form__checkbox-icon"></div>
-              <span class="form__checkbox-title">Customizable Profile</span>
-              <span class="form__checkbox-text"
-                >Custom theme on your profile</span
-              >
-              <span class="form__checkbox-price">+$${this._data.plans.yearly ? this._data.addOns.customProfile[1] + `/yr` : this._data.addOns.customProfile[0] + `/mo`}</span>
-            </label>
-          </div>
-
-          <div class="btn-container">
-            <button type="button" class="btn btn-back" data-goto="select-plan">Go Back</button>
-            <button type="submit" class="btn btn-next" data-goto="summary">Next Step</button>
-          </div>
-        `;
-        return markup;
-    }
-}
-exports.default = new AddOnsView();
-
-},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ioU2i":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _view = require("./view");
-var _viewDefault = parcelHelpers.interopDefault(_view);
-class SummaryView extends (0, _viewDefault.default) {
-    _parentElement = document.querySelector(`.summary`);
-    addHandlerSummarySubmit = function(handler) {
-        this._parentElement.addEventListener(`click`, function(e) {
-            const btn = e.target.closest(`.btn-confirm`);
-            if (!btn) return;
-            const goTo = ``;
-            handler(goTo);
-        });
-    };
-    addHandlerChangePlan = function(handler) {
-        this._parentElement.addEventListener(`click`, function(e) {
-            e.preventDefault();
-            const link = e.target.closest(`.summary__mainplan--link`);
-            if (!link) return;
-            const goTo = link.href;
-            if (!link) return;
-            handler(goTo);
-        });
-    };
-    addHandlerSummaryGoBack = function(handler) {
-        this._parentElement.addEventListener(`click`, function(e) {
-            const goTo = e.target.closest(`.btn-back`)?.dataset.goto;
-            if (!goTo) return;
-            handler(goTo);
-        });
-    };
-    _generateMarkup() {
-        const markup = `
-        <div class="form__header">
-            <h2 class="form__title">Finishing up</h2>
-            <span class="form__text"
-              >Double-check everything looks OK before confirming.</span
-            >
-          </div>
-          <div class="summary-card">
-            <div class="summary__mainplan mb-2">
-              <span class="summary__mainplan--name">${this._data.paymentPlan.planType} (${this._data.yearly ? `Yearly` : `Monthly`})</span>
-              <a href="select-plan" class="summary__mainplan--link">Change</a>
-              <span class="summary__mainplan--price">$${this._data.paymentPlan.paymentValue}/${this._data.yearly ? `yr` : `mo`}</span>
-            </div>
-            <hr class="mb-2" />
-            <div class="summary__addons ${this._data.addOns.onlineService === 0 ? `hidden` : ``}">
-              <span class="summary__addons--name">Online Service </span>
-              <span class="summary__addons--price">+$${this._data.addOns.onlineService}/${this._data.yearly ? `yr` : `mo`}</span>
-            </div>
-            <div class="summary__addons ${this._data.addOns.largerStorage === 0 ? `hidden` : ``}">
-              <span class="summary__addons--name">Larger Storage </span>
-              <span class="summary__addons--price">+$${this._data.addOns.largerStorage}/${this._data.yearly ? `yr` : `mo`}</span>
-            </div>
-            <div class="summary__addons ${this._data.addOns.customProfile === 0 ? `hidden` : ``}">
-              <span class="summary__addons--name">Customizable Profile </span>
-              <span class="summary__addons--price">+$${this._data.addOns.customProfile}/${this._data.yearly ? `yr` : `mo`}</span>
-            </div>
-          </div>
-          <div class="summary__total">
-            <span class="summary__total--name">Total(per year)</span>
-            <span class="summary__total--price">$${this._data.total}/${this._data.yearly ? `yr` : `mo`}</span>
-          </div>
-
-          <div class="btn-container">
-            <button type="button" class="btn btn-back" data-goto="add-ons">Go Back</button>
-            <button type="submit" class="btn btn-confirm">Confirm</button>
-          </div>
-        `;
-        return markup;
-    }
-}
-exports.default = new SummaryView();
-
-},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cH3qm":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _view = require("./view");
-var _viewDefault = parcelHelpers.interopDefault(_view);
-class ThankYouView extends (0, _viewDefault.default) {
-    _parentElement = document.querySelector(`.thankyou`);
-    _generateMarkup() {
-        const markup = `
-    
-    <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="80"
-            height="80"
-            viewBox="0 0 80 80"
-          >
-            <g fill="none">
-              <circle cx="40" cy="40" r="40" fill="#F9818E" />
-              <path
-                fill="#E96170"
-                d="M48.464 79.167c.768-.15 1.53-.321 2.288-.515a40.04 40.04 0 0 0 3.794-1.266 40.043 40.043 0 0 0 3.657-1.63 40.046 40.046 0 0 0 12.463-9.898A40.063 40.063 0 0 0 78.3 51.89c.338-1.117.627-2.249.867-3.391L55.374 24.698a21.6 21.6 0 0 0-15.332-6.365 21.629 21.629 0 0 0-15.344 6.365c-8.486 8.489-8.486 22.205 0 30.694l23.766 23.775Z"
-              />
-              <path
-                fill="#FFF"
-                d="M40.003 18.333a21.58 21.58 0 0 1 15.31 6.351c8.471 8.471 8.471 22.158 0 30.63-8.47 8.47-22.156 8.47-30.627 0-8.47-8.472-8.47-22.159 0-30.63a21.594 21.594 0 0 1 15.317-6.35Zm9.865 15c-.316.028-.622.15-.872.344l-12.168 9.13-5.641-5.642c-1.224-1.275-3.63 1.132-2.356 2.356l6.663 6.663c.56.56 1.539.63 2.173.156l13.326-9.995c1.122-.816.43-2.993-.956-3.013a1.666 1.666 0 0 0-.17 0Z"
-              />
-            </g>
-          </svg>
-          <h2 class="thankyou__header">Thank You</h2>
-          <p class="thankyou__text">
-            Thanks for confirming your subscription! We hope you have fun using
-            our platform. If you ever need support, please feel free to email us
-            at support@loremgaming.com.
-          </p>`;
-        return markup;
-    }
-}
-exports.default = new ThankYouView();
-
-},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gSXXb":[function(require,module,exports) {
+},{"core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","./model":"c5Qb1","./view/personalInfoView":"aDUeM","./view/selecPlanView":"j5oVO","./view/sidebarView":"eDgDT","./view/addOnsView":"dgUbU","./view/summaryView":"ioU2i","./view/thankYouView":"cH3qm","regenerator-runtime/runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gSXXb":[function(require,module,exports) {
 var global = require("f8b10446f1ec3e11");
 var DESCRIPTORS = require("c6f4d2ad7a1f5b6c");
 var defineBuiltInAccessor = require("c00793a755f40a13");
@@ -2765,7 +2039,733 @@ module.exports = function(scheduler, hasTimeArg) {
 },{"214ebe0689353060":"i8HOC","209cb1740e586c18":"148ka","ac981e53c278e542":"l3Kyn","7c64a3c4e0a8105e":"2BA6V","52e666aaa13b3884":"73xBt","6c1e459407218fee":"RsFXo","3db0969411a0d6fd":"b9O3D"}],"2BA6V":[function(require,module,exports) {
 /* global Bun -- Deno case */ module.exports = typeof Bun == "function" && Bun && typeof Bun.version == "string";
 
-},{}],"dXNgZ":[function(require,module,exports) {
+},{}],"c5Qb1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "state", ()=>state);
+parcelHelpers.export(exports, "holdPersonalInfo", ()=>holdPersonalInfo);
+parcelHelpers.export(exports, "yearlyPlanSelect", ()=>yearlyPlanSelect);
+parcelHelpers.export(exports, "setPage", ()=>setPage);
+parcelHelpers.export(exports, "holdPaymentPlan", ()=>holdPaymentPlan);
+parcelHelpers.export(exports, "resetAddOns", ()=>resetAddOns);
+parcelHelpers.export(exports, "holdAddOns", ()=>holdAddOns);
+parcelHelpers.export(exports, "setTotal", ()=>setTotal);
+const state = {
+    record: {
+        personalInfo: {},
+        paymentPlan: {},
+        yearly: new Boolean(),
+        addOns: {
+            onlineService: 0,
+            largerStorage: 0,
+            customProfile: 0
+        },
+        total: new Number()
+    },
+    page: `personal-info`,
+    plans: {
+        yearly: true,
+        arcade: [
+            9,
+            90
+        ],
+        advanced: [
+            12,
+            120
+        ],
+        pro: [
+            15,
+            150
+        ]
+    },
+    addOns: {
+        onlineService: [
+            1,
+            10
+        ],
+        largerStorage: [
+            2,
+            20
+        ],
+        customProfile: [
+            2,
+            20
+        ]
+    }
+};
+const holdPersonalInfo = function(data) {
+    state.record.personalInfo = data;
+};
+const yearlyPlanSelect = function(data) {
+    state.plans.yearly = data;
+};
+const setPage = function(data) {
+    state.page = data;
+};
+const holdPaymentPlan = function(data) {
+    state.record.paymentPlan.planType = data.plan_type;
+    state.record.paymentPlan.paymentValue = +data.select_plan;
+    state.record.yearly = data.yearly === `on` ? true : false;
+};
+const resetAddOns = function() {
+    state.record.addOns = {
+        onlineService: 0,
+        largerStorage: 0,
+        customProfile: 0
+    };
+};
+const holdAddOns = function(data) {
+    if (!data) return;
+    state.record.addOns.onlineService = data.online_service ? +data.online_service : 0;
+    state.record.addOns.largerStorage = data.larger_storage ? +data.larger_storage : 0;
+    state.record.addOns.customProfile = data.custom_profile ? +data.custom_profile : 0;
+};
+const setTotal = function() {
+    const totalAddOns = Array.from(Object.values(state.record.addOns)).reduce((arr, cur)=>cur + arr);
+    state.record.total = state.record.paymentPlan.paymentValue + totalAddOns;
+};
+const setYearly = function() {
+    if (state.yearly === false) state.plans.yearly = state.yearly;
+};
+const init = function() {
+    setYearly();
+};
+init();
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"aDUeM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class PersonalInfoView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(`.personal-info`);
+    constructor(){
+        super();
+        this.addHandlerInput(this.dataValidation.bind(this));
+    }
+    addHandlerPersonalInfo = function(handler) {
+        window.addEventListener(`load`, handler);
+    };
+    addHandlerPersonalInfoSubmit = function(handler) {
+        this._parentElement.addEventListener(`submit`, function(e) {
+            e.preventDefault();
+            const goTo = e.target.querySelector(`.btn-next`).dataset.goto;
+            const dataArr = [
+                ...new FormData(this)
+            ];
+            const data = Object.fromEntries(dataArr);
+            handler(data, goTo);
+        });
+    };
+    addHandlerInput = function(handler) {
+        this._parentElement.addEventListener(`input`, function(e) {
+            const input = e.target.closest(`input`);
+            if (!input) return;
+            handler();
+        });
+    };
+    dataValidation() {
+        const inputs = Array.from(this._parentElement.querySelectorAll(`input`));
+        const control = [];
+        inputs.forEach((input)=>{
+            if (input.value === `` && !input.classList.contains(`invalid`)) input.classList.add(`invalid`);
+            else if (input.value !== `` && input.classList.contains(`invalid`)) input.classList.remove(`invalid`);
+            control.push(input.value === `` ? 0 : 1);
+        });
+        return control.reduce((arr, cur)=>arr * cur);
+    }
+    _generateMarkup() {
+        const markup = `
+        <div class="form__header">
+        <h2 class="form__title">Personal info</h2>
+        <span class="form__text"
+            >Please provide your name, email address, and phone number.</span
+        >
+        </div>
+        <div class="form__group">
+        <label for="name" class="form__label">Name</label>
+        <input
+            type="text"
+            class="form__input"
+            id="name"
+            placeholder="e.g. Stephen King"
+            name="name"
+            value="${Object.keys(this._data).length === 0 ? `` : this._data.name}"
+        />
+        <span class="form__input-error">This field is required</span>
+        </div>
+        <div class="form__group">
+        <label for="email" class="form__label">Email Address</label>
+        <input
+            type="email"
+            class="form__input"
+            id="email"
+            placeholder="e.g. stephenking@lorem.com"
+            name="email"
+            value="${Object.keys(this._data).length === 0 ? `` : this._data.email}"
+        />
+        <span class="form__input-error">This field is required</span>
+        </div>
+        <div class="form__group">
+        <label for="phone" class="form__label">Phone Number</label>
+        <input
+            type="tel"
+            class="form__input"
+            id="phone"
+            placeholder="e.g. +1 234 567 890"
+            name="phone"
+            value="${Object.keys(this._data).length === 0 ? `` : this._data.phone}"
+        />
+        <span class="form__input-error">This field is required</span>
+        </div>
+        <div class="btn-container">
+        <button class="btn btn-next" data-goto="select-plan">Next Step</button>
+        </div>
+    
+    
+    `;
+        return markup;
+    }
+}
+exports.default = new PersonalInfoView();
+
+},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jTxwe":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class View {
+    _data;
+    render(data, clear = true) {
+        this._data = data;
+        this.clear(clear);
+        const markup = this._generateMarkup();
+        this._parentElement.insertAdjacentHTML(`afterbegin`, markup);
+    }
+    update(data) {
+        this._data = data;
+        if (!data) return;
+        const markup = this._generateMarkup();
+        const newDOM = document.createRange().createContextualFragment(markup);
+        const newElement = Array.from(newDOM.querySelectorAll(`*`));
+        const curElement = Array.from(this._parentElement.querySelectorAll(`*`));
+        newElement.forEach((newEl, i)=>{
+            const curEl = curElement[i];
+            if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== ``) curEl.textContent = newEl.textContent;
+            if (!newEl.isEqualNode(curEl)) Array.from(newEl.attributes).forEach((attr)=>curEl.setAttribute(attr.name, attr.value));
+        });
+    }
+    dataValidation(type) {
+        const inputs = Array.from(this._parentElement.querySelectorAll(`input`));
+        let control = [];
+        if (type === `text`) {
+            inputs.forEach((input)=>{
+                if (input.value === `` && !input.classList.contains(`invalid`)) input.classList.add(`invalid`);
+                else if (input.value !== `` && input.classList.contains(`invalid`)) input.classList.remove(`invalid`);
+                control.push(input.value === `` ? 0 : 1);
+            });
+            return control.reduce((arr, cur)=>arr * cur);
+        } else if (type === `radio`) {
+            control = inputs.map((cur)=>cur.checked === true ? 1 : 0);
+            inputs.forEach((input)=>{
+                if (!control && !input.classList.contains(`invalid`)) input.classList.add(`invalid`);
+                else if (control && input.classList.contains(`invalid`)) input.classList.remove(`invalid`);
+            });
+            return control.reduce((sum, cur)=>cur + sum);
+        }
+    }
+    clear(clear) {
+        if (clear === true) {
+            const elementArr = Array.from(this._parentElement.parentElement.children);
+            elementArr.forEach((element)=>element.innerHTML = ``);
+        } else if (clear === false) this._parentElement.innerHTML = ``;
+    }
+}
+exports.default = View;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j5oVO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class SelectPlanView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(`.select-plan`);
+    constructor(){
+        super();
+        this._addHandlerInputDataValidation(this.dataValidation.bind(this));
+    }
+    addHandlerYearlyPlan(handler) {
+        this._parentElement.addEventListener(`change`, function(e) {
+            const input = e.target.closest(`.form__switch`);
+            if (!input) return;
+            const data = input.checked;
+            handler(data);
+        });
+    }
+    addHandlerClickPlan = function(handler) {
+        this._parentElement.addEventListener(`change`, function(e) {
+            const input = e.target.closest(`.form__radio`);
+            if (!input) return;
+            const dataArr = [
+                ...new FormData(this)
+            ];
+            const data = Object.fromEntries(dataArr);
+            data.plan_type = input.id;
+            handler(data);
+        });
+    };
+    addHandlerSubmitPlan = function(handler) {
+        this._parentElement.addEventListener(`submit`, function(e) {
+            e.preventDefault();
+            const goTo = e.target.querySelector(`.btn-next`).dataset.goto;
+            handler(goTo);
+        });
+    };
+    _addHandlerInputDataValidation = function(handler) {
+        this._parentElement.addEventListener(`input`, function(e) {
+            e.preventDefault();
+            const input = e.target.classList.contains(`.form__radio`);
+            if (!input) return;
+            handler();
+        });
+    };
+    addHandlerPlanGoBack = function(handler) {
+        this._parentElement.addEventListener(`click`, function(e) {
+            const btn = e.target.closest(`.btn-back`);
+            if (!btn) return;
+            const goTo = btn.dataset.goto;
+            handler(goTo);
+        });
+    };
+    dataValidation() {
+        const inputs = Array.from(this._parentElement.querySelectorAll(`.form__radio`));
+        const control = inputs.map((cur)=>cur.checked === true ? 1 : 0);
+        const sumControl = control.reduce((sum, cur)=>cur + sum);
+        inputs.forEach((input)=>{
+            if (!sumControl && !input.nextElementSibling.classList.contains(`invalid`)) input.nextElementSibling.classList.add(`invalid`);
+            else if (sumControl && input.nextElementSibling.classList.contains(`invalid`)) input.nextElementSibling.classList.remove(`invalid`);
+        });
+        return sumControl;
+    }
+    _generateMarkup() {
+        const markup = `
+          <div class="form__header">
+            <h2 class="form__title">Select your plan</h2>
+            <span class="form__text"
+              >You have the option of monthly or yearly billing.</span
+            >
+          </div>
+          <div class="form__group">
+            <input
+              class="form__radio"
+              type="radio"
+              id="arcade"
+              name="select_plan"
+              value="${this._data.plans.yearly ? this._data.plans.arcade[1] : this._data.plans.arcade[0]}"
+              ${this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.arcade[1] || !this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.arcade[0] ? `checked` : ``}
+            />
+            <label class="form__radio-label" for="arcade">
+            <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+          >
+            <g fill="none" fill-rule="evenodd">
+              <circle cx="20" cy="20" r="20" fill="#FFAF7E" />
+              <path
+                fill="#FFF"
+                fill-rule="nonzero"
+                d="M24.995 18.005h-3.998v5.998h-2v-5.998H15a1 1 0 0 0-1 1V29a1 1 0 0 0 1 1h9.995a1 1 0 0 0 1-1v-9.995a1 1 0 0 0-1-1Zm-5.997 8.996h-2v-1.999h2v2Zm2-11.175a2.999 2.999 0 1 0-2 0v2.18h2v-2.18Z"
+              />
+            </g>
+          </svg>
+              <span class="form__radio-title">Arcade</span>
+              <span class="form__radio-text">$${this._data.plans.yearly ? this._data.plans.arcade[1] + `/yr` : this._data.plans.arcade[0] + `/mo`}</span>
+              <span class="form__radio-promo ${!this._data.plans.yearly ? `form__radio-promo--hidden` : ``}">
+              2 months free
+              </span>
+              
+            </label>
+          </div>
+          <div class="form__group">
+            <input
+              class="form__radio"
+              type="radio"
+              id="advanced"
+              name="select_plan"
+              value="${this._data.plans.yearly ? this._data.plans.advanced[1] : this._data.plans.advanced[0]}"
+              ${this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.advanced[1] || !this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.advanced[0] ? `checked` : ``}
+            />
+            <label class="form__radio-label" for="advanced">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+              >
+                <g fill="none" fill-rule="evenodd">
+                  <circle cx="20" cy="20" r="20" fill="#F9818E" />
+                  <path
+                    fill="#FFF"
+                    fill-rule="nonzero"
+                    d="M25.057 15H14.944C12.212 15 10 17.03 10 19.885c0 2.857 2.212 4.936 4.944 4.936h10.113c2.733 0 4.943-2.08 4.943-4.936S27.79 15 25.057 15ZM17.5 20.388c0 .12-.108.237-.234.237h-1.552v1.569c0 .126-.138.217-.259.217H14.5c-.118 0-.213-.086-.213-.203v-1.583h-1.569c-.126 0-.217-.139-.217-.26v-.956c0-.117.086-.213.202-.213h1.584v-1.554c0-.125.082-.231.203-.231h.989c.12 0 .236.108.236.234v1.551h1.555c.125 0 .231.083.231.204v.988Zm5.347.393a.862.862 0 0 1-.869-.855c0-.472.39-.856.869-.856.481 0 .87.384.87.856 0 .471-.389.855-.87.855Zm1.9 1.866a.86.86 0 0 1-.87-.852.86.86 0 0 1 .87-.855c.48 0 .87.38.87.855a.86.86 0 0 1-.87.852Zm0-3.736a.862.862 0 0 1-.87-.854c0-.472.39-.856.87-.856s.87.384.87.856a.862.862 0 0 1-.87.854Zm1.899 1.87a.862.862 0 0 1-.868-.855c0-.472.389-.856.868-.856s.868.384.868.856a.862.862 0 0 1-.868.855Z"
+                  />
+                </g>
+              </svg>
+              <span class="form__radio-title">Advanced</span>
+              <span class="form__radio-text">$${this._data.plans.yearly ? this._data.plans.advanced[1] + `/yr` : this._data.plans.advanced[0] + `/mo`}</span>
+              <span class="form__radio-promo ${!this._data.plans.yearly ? `form__radio-promo--hidden` : ``}">
+              2 months free
+              </span>
+            </label>
+          </div>
+          <div class="form__group">
+            <input
+              class="form__radio"
+              type="radio"
+              id="pro"
+              name="select_plan"
+              value="${this._data.plans.yearly ? this._data.plans.pro[1] : this._data.plans.pro[0]}"
+              ${this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.pro[1] || !this._data.plans.yearly && this._data.record.paymentPlan.paymentValue === this._data.plans.pro[0] ? `checked` : ``}
+            />
+            <label class="form__radio-label" for="pro">
+            <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="40"
+          height="40"
+          viewBox="0 0 40 40"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <circle cx="20" cy="20" r="20" fill="#483EFF" />
+            <path
+              fill="#FFF"
+              fill-rule="nonzero"
+              d="M26.666 13H13.334A3.333 3.333 0 0 0 10 16.333v7.193a3.447 3.447 0 0 0 2.14 3.24c1.238.5 2.656.182 3.56-.8L18.52 23h2.96l2.82 2.966a3.2 3.2 0 0 0 3.56.8 3.447 3.447 0 0 0 2.14-3.24v-7.193A3.333 3.333 0 0 0 26.666 13Zm-9.333 6H16v1.333a.667.667 0 0 1-1.333 0V19h-1.333a.667.667 0 0 1 0-1.334h1.333v-1.333a.667.667 0 1 1 1.333 0v1.333h1.333a.667.667 0 1 1 0 1.334Zm7.333 2a2.667 2.667 0 1 1 0-5.333 2.667 2.667 0 0 1 0 5.333ZM26 18.333a1.333 1.333 0 1 1-2.667 0 1.333 1.333 0 0 1 2.667 0Z"
+            />
+          </g>
+        </svg>
+              <span class="form__radio-title">Pro</span>
+              <span class="form__radio-text">$${this._data.plans.yearly ? this._data.plans.pro[1] + `/yr` : this._data.plans.pro[0] + `/mo`}</span>
+              <span class="form__radio-promo ${!this._data.plans.yearly ? `form__radio-promo--hidden` : ``}">
+              2 months free
+              </span>
+            </label>
+          </div>
+          <div class="form__group all-line all-line--gray mt-2">
+            <input
+              type="checkbox"
+              class="form__switch"
+              id="yearly"
+              name="yearly"
+              ${this._data.plans.yearly ? `checked` : ``}
+            />
+            <label for="yearly" class="form__switch-label">
+              <span class="form__switch-text--1">Monthly</span>
+              <span class="form__switch-slider"></span>
+              <span class="form__switch-text--2">Yearly</span>
+            </label>
+          </div>
+          <div class="btn-container">
+            <button type="button" class="btn btn-back" data-goto="personal-info">Go Back</button>
+            <button type="submit" class="btn btn-next" data-goto="add-ons">Next Step</button>
+          </div>
+        
+    `;
+        return markup;
+    }
+}
+exports.default = new SelectPlanView();
+
+},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eDgDT":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class SidebarView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(`.sidebar`);
+    addHandlerChangePage = function(handler) {};
+    _generateMarkup() {
+        const markup = `
+    <ul class="sidebar__list">
+        <li class="sidebar__item ${this._data.page === `personal-info` ? `active` : ``}" data-id="0">
+            <div class="sidebar__item-icon">1</div>
+            <span class="sidebar__item-title">Step 1</span>
+            <span class="sidebar__item-text">Your info</span>
+        </li>
+        <li class="sidebar__item ${this._data.page === `select-plan` ? `active` : ``}" data-id="1">
+            <div class="sidebar__item-icon" >2</div>
+            <span class="sidebar__item-title">Step 2</span>
+            <span class="sidebar__item-text">Select plan</span>
+        </li>
+        <li class="sidebar__item ${this._data.page === `add-ons` ? `active` : ``}" data-id="2">
+            <div class="sidebar__item-icon">3</div>
+            <span class="sidebar__item-title">Step 3</span>
+            <span class="sidebar__item-text">Add-ons Step</span>
+        </li>
+        <li class="sidebar__item ${this._data.page === `summary` ? `active` : ``}" data-id="3">
+            <div class="sidebar__item-icon">4</div>
+            <span class="sidebar__item-title">Step 4</span>
+            <span class="sidebar__item-text">Summary</span>
+        </li>
+    </ul>
+`;
+        return markup;
+    }
+}
+exports.default = new SidebarView();
+
+},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dgUbU":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class AddOnsView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(`.add_ons`);
+    addHandlerClickAnnOns = function(handler) {
+        this._parentElement.addEventListener(`change`, function(e) {
+            const input = e.target.closest(`input`);
+            if (!input) return;
+            const dataArr = [
+                ...new FormData(this)
+            ];
+            const data = Object.fromEntries(dataArr);
+            handler(data);
+        });
+    };
+    addHandlerSubmitAddOns = function(handler) {
+        this._parentElement.addEventListener(`submit`, function(e) {
+            e.preventDefault();
+            const goTo = e.target.querySelector(`.btn-next`).dataset.goto;
+            if (!goTo) return;
+            handler(goTo);
+        });
+    };
+    addHandlerAddOnsGoBack = function(handler) {
+        this._parentElement.addEventListener(`click`, function(e) {
+            const btn = e.target.closest(`.btn-back`);
+            if (!btn) return;
+            const goTo = btn.dataset.goto;
+            handler(goTo);
+        });
+    };
+    _generateMarkup() {
+        const markup = `
+        <div class="form__header">
+            <h2 class="form__title">Pick add-ons</h2>
+            <span class="form__text"
+              >Add-ons help enhance your gaming experience.</span
+            >
+          </div>
+          <div class="form__group mb-1">
+            <input
+              type="checkbox"
+              class="form__checkbox"
+              id="online-service"
+              name="online_service"
+              value="${this._data.plans.yearly ? this._data.addOns.onlineService[1] : this._data.addOns.onlineService[0]}"
+              ${this._data.record.addOns.onlineService > 0 ? `checked` : ``}
+            
+            />
+            <label for="online-service" class="form__checkbox-label">
+              <div class="form__checkbox-icon"></div>
+              <span class="form__checkbox-title">Online service</span>
+              <span class="form__checkbox-text"
+                >Access to multiplayer games</span
+              >
+              <span class="form__checkbox-price">+$${this._data.plans.yearly ? this._data.addOns.onlineService[1] + `/yr` : this._data.addOns.onlineService[0] + `/mo`}</span>
+            </label>
+          </div>
+          <div class="form__group mb-1">
+            <input
+              type="checkbox"
+              class="form__checkbox"
+              id="larger-storage"
+              name="larger_storage"
+              value="${this._data.plans.yearly ? this._data.addOns.largerStorage[1] : this._data.addOns.largerStorage[0]}"
+              ${this._data.record.addOns.largerStorage > 0 ? `checked` : ``}
+
+            />
+            <label for="larger-storage" class="form__checkbox-label">
+              <div class="form__checkbox-icon"></div>
+              <span class="form__checkbox-title">Larger storage</span>
+              <span class="form__checkbox-text">Extra 1TB of cloud save</span>
+              <span class="form__checkbox-price">+$${this._data.plans.yearly ? this._data.addOns.largerStorage[1] + `/yr` : this._data.addOns.largerStorage[0] + `/mo`}</span>
+            </label>
+          </div>
+          <div class="form__group">
+            <input
+              type="checkbox"
+              class="form__checkbox"
+              id="customizable-profile"
+              name="custom_profile"
+              value="${this._data.plans.yearly ? this._data.addOns.customProfile[1] : this._data.addOns.customProfile[0]}"
+              ${this._data.record.addOns.customProfile > 0 ? `checked` : ``}
+
+            />
+            <label for="customizable-profile" class="form__checkbox-label">
+              <div class="form__checkbox-icon"></div>
+              <span class="form__checkbox-title">Customizable Profile</span>
+              <span class="form__checkbox-text"
+                >Custom theme on your profile</span
+              >
+              <span class="form__checkbox-price">+$${this._data.plans.yearly ? this._data.addOns.customProfile[1] + `/yr` : this._data.addOns.customProfile[0] + `/mo`}</span>
+            </label>
+          </div>
+
+          <div class="btn-container">
+            <button type="button" class="btn btn-back" data-goto="select-plan">Go Back</button>
+            <button type="submit" class="btn btn-next" data-goto="summary">Next Step</button>
+          </div>
+        `;
+        return markup;
+    }
+}
+exports.default = new AddOnsView();
+
+},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ioU2i":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class SummaryView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(`.summary`);
+    addHandlerSummarySubmit = function(handler) {
+        this._parentElement.addEventListener(`click`, function(e) {
+            const btn = e.target.closest(`.btn-confirm`);
+            if (!btn) return;
+            const goTo = ``;
+            handler(goTo);
+        });
+    };
+    addHandlerChangePlan = function(handler) {
+        this._parentElement.addEventListener(`click`, function(e) {
+            e.preventDefault();
+            const link = e.target.closest(`.summary__mainplan--link`);
+            if (!link) return;
+            const goTo = link.href;
+            if (!link) return;
+            handler(goTo);
+        });
+    };
+    addHandlerSummaryGoBack = function(handler) {
+        this._parentElement.addEventListener(`click`, function(e) {
+            const goTo = e.target.closest(`.btn-back`)?.dataset.goto;
+            if (!goTo) return;
+            handler(goTo);
+        });
+    };
+    _generateMarkup() {
+        const markup = `
+        <div class="form__header">
+            <h2 class="form__title">Finishing up</h2>
+            <span class="form__text"
+              >Double-check everything looks OK before confirming.</span
+            >
+          </div>
+          <div class="summary-card">
+            <div class="summary__mainplan mb-2">
+              <span class="summary__mainplan--name">${this._data.paymentPlan.planType} (${this._data.yearly ? `Yearly` : `Monthly`})</span>
+              <a href="select-plan" class="summary__mainplan--link">Change</a>
+              <span class="summary__mainplan--price">$${this._data.paymentPlan.paymentValue}/${this._data.yearly ? `yr` : `mo`}</span>
+            </div>
+            <hr class="mb-2" />
+            <div class="summary__addons ${this._data.addOns.onlineService === 0 ? `hidden` : ``}">
+              <span class="summary__addons--name">Online Service </span>
+              <span class="summary__addons--price">+$${this._data.addOns.onlineService}/${this._data.yearly ? `yr` : `mo`}</span>
+            </div>
+            <div class="summary__addons ${this._data.addOns.largerStorage === 0 ? `hidden` : ``}">
+              <span class="summary__addons--name">Larger Storage </span>
+              <span class="summary__addons--price">+$${this._data.addOns.largerStorage}/${this._data.yearly ? `yr` : `mo`}</span>
+            </div>
+            <div class="summary__addons ${this._data.addOns.customProfile === 0 ? `hidden` : ``}">
+              <span class="summary__addons--name">Customizable Profile </span>
+              <span class="summary__addons--price">+$${this._data.addOns.customProfile}/${this._data.yearly ? `yr` : `mo`}</span>
+            </div>
+          </div>
+          <div class="summary__total">
+            <span class="summary__total--name">Total(per year)</span>
+            <span class="summary__total--price">$${this._data.total}/${this._data.yearly ? `yr` : `mo`}</span>
+          </div>
+
+          <div class="btn-container">
+            <button type="button" class="btn btn-back" data-goto="add-ons">Go Back</button>
+            <button type="submit" class="btn btn-confirm">Confirm</button>
+          </div>
+        `;
+        return markup;
+    }
+}
+exports.default = new SummaryView();
+
+},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cH3qm":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./view");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class ThankYouView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(`.thankyou`);
+    _generateMarkup() {
+        const markup = `
+    
+    <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="80"
+            height="80"
+            viewBox="0 0 80 80"
+          >
+            <g fill="none">
+              <circle cx="40" cy="40" r="40" fill="#F9818E" />
+              <path
+                fill="#E96170"
+                d="M48.464 79.167c.768-.15 1.53-.321 2.288-.515a40.04 40.04 0 0 0 3.794-1.266 40.043 40.043 0 0 0 3.657-1.63 40.046 40.046 0 0 0 12.463-9.898A40.063 40.063 0 0 0 78.3 51.89c.338-1.117.627-2.249.867-3.391L55.374 24.698a21.6 21.6 0 0 0-15.332-6.365 21.629 21.629 0 0 0-15.344 6.365c-8.486 8.489-8.486 22.205 0 30.694l23.766 23.775Z"
+              />
+              <path
+                fill="#FFF"
+                d="M40.003 18.333a21.58 21.58 0 0 1 15.31 6.351c8.471 8.471 8.471 22.158 0 30.63-8.47 8.47-22.156 8.47-30.627 0-8.47-8.472-8.47-22.159 0-30.63a21.594 21.594 0 0 1 15.317-6.35Zm9.865 15c-.316.028-.622.15-.872.344l-12.168 9.13-5.641-5.642c-1.224-1.275-3.63 1.132-2.356 2.356l6.663 6.663c.56.56 1.539.63 2.173.156l13.326-9.995c1.122-.816.43-2.993-.956-3.013a1.666 1.666 0 0 0-.17 0Z"
+              />
+            </g>
+          </svg>
+          <h2 class="thankyou__header">Thank You</h2>
+          <p class="thankyou__text">
+            Thanks for confirming your subscription! We hope you have fun using
+            our platform. If you ever need support, please feel free to email us
+            at support@loremgaming.com.
+          </p>`;
+        return markup;
+    }
+}
+exports.default = new ThankYouView();
+
+},{"./view":"jTxwe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dXNgZ":[function(require,module,exports) {
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
