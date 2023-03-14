@@ -1,0 +1,70 @@
+ul {
+  list-style: none;
+}
+
+.form-container {
+  padding: 4rem 8rem;
+  position: relative;
+  & > * {
+    transition: all 0.2s ease-out;
+  }
+
+  .hidden {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+
+  @media only screen and (max-width: 37.5em) {
+    background-color: var(--color-white);
+    border-radius: 0.9rem;
+    padding: 2rem 4rem;
+    margin: 2rem;
+  }
+}
+
+.btn {
+  padding: 1.5rem 2rem;
+  cursor: pointer;
+  border-radius: 0.8rem;
+  font-size: 1.6rem;
+  position: absolute;
+  border: none;
+
+  &-next {
+    background-color: var(--color-dark-blue-1);
+    color: var(--color-white);
+    font-weight: 500;
+    right: 8rem;
+    bottom: 2rem;
+  }
+  &-confirm {
+    background-color: var(--color-dark-blue-2);
+    color: var(--color-white);
+    font-weight: 500;
+    right: 8rem;
+    bottom: 2rem;
+  }
+  &-back {
+    background-color: transparent;
+    font-weight: 700;
+    color: var(--color-dark-blue-1);
+    left: 8rem;
+    bottom: 2rem;
+  }
+
+  @media only screen and (max-width: 37.5em) {
+    position: fixed;
+    &-container {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      height: 8rem;
+      width: 100%;
+      background-color: var(--color-white);
+    }
+    &-next {
+      bottom: 2rem;
+      right: 4rem;
+    }
+  }
+}

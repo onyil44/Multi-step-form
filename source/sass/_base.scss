@@ -1,0 +1,49 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+  font-family: "Ubuntu", sans-serif;
+  @media only screen and (max-width: 37.5em) {
+    font-size: 8px;
+  }
+}
+
+body {
+  font-size: 1.6rem;
+  background-color: var(--color-magnolia);
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  @media only screen and (max-width: 37.5rem) {
+    display: block;
+  }
+}
+
+.container {
+  width: 100rem;
+  height: 60rem;
+  margin: auto;
+  background-color: var(--color-white);
+  border-radius: 0.9rem;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1.2fr 3fr;
+  gap: 2rem;
+  border-radius: 0.9rem;
+  @media only screen and (max-width: 37.5em) {
+    background-color: transparent;
+    grid-template-columns: 1fr;
+    grid-template-rows: 7rem 1fr;
+    width: 100%;
+    padding-bottom: 8rem;
+    max-height: fit-content;
+  }
+}
+
+h2 {
+  font-size: 3.6rem;
+}

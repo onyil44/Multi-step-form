@@ -1,0 +1,17 @@
+.thankyou {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+
+  &__header {
+    color: var(--color-dark-blue-1);
+  }
+
+  &__text {
+    text-align: center;
+    color: var(--color-dark-gray);
+  }
+}
